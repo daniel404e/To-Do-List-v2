@@ -20,6 +20,7 @@ var listz =[];
 var clicked =[];
 var once=0;
 var currentlist;
+
 const itemzschema = new mongoose.Schema({ content: String }); //create new schema
 const idindex = new mongoose.Schema({_id: Number, index: Number}); 
 
@@ -59,12 +60,46 @@ function findalllists()
 
 }
 
+function renderpage(res)
+{
+     
+        res.render("list",{whatday: currentlist, additem: itemz , clicks: clicked ,alllists: listz });
+     
+    
+
+}
 
 
-function syncdbtoitems() {
 
 
-    findalllists();
+function syncdbtoitems(ifrender,res) {
+
+
+
+
+
+    listmodel.find(function(err,data)                // reading the total data
+    { 
+
+        if(err)
+        {
+              console.log(err);
+        }
+        else{
+         listz =[];
+        data.forEach(element => {
+            listz.push(element.lname);
+            // console.log(listz);
+        });
+
+          }
+
+          console.log(listz);
+
+   
+
+
+  
      
     console.log(currentlist);
     if(currentlist == day)
@@ -79,9 +114,18 @@ function syncdbtoitems() {
        
        
     });
+    console.log("items are:");
     console.log(itemz);
      
-    
+    if (ifrender==1)
+    {
+      
+        console.log(itemz);
+        renderpage(res);
+      
+    }
+
+
     });
 }
 
@@ -111,6 +155,16 @@ else
          
     }
    
+     
+    if (ifrender==1)
+    {
+      
+       
+      renderpage(res);
+      
+    }
+       
+
 
 });               
 
@@ -124,7 +178,10 @@ else
  
 
 
+////////////////////////
 
+});
+///////////////////////
     
 
 }
@@ -146,7 +203,7 @@ var options = {
     var day = today.toLocaleDateString("en-US",options);
     currentlist = day;
     itemmodel.deleteMany({}, function(err,data){});
-syncdbtoitems();     //run once only no more 
+syncdbtoitems(0);     //run once only no more 
  
 once =1;
 
@@ -154,14 +211,11 @@ once =1;
 
 app.get("/",function(req,res){
 
-    setTimeout(function(){
-        syncdbtoitems();  
-    }, 1000); 
+   
+        syncdbtoitems(1,res);  
+      
          
-        setTimeout(function(){
-            res.render("list",{whatday: currentlist, additem: itemz , clicks: clicked ,alllists: listz });
-
-        }, 1500);   
+          
 
          
 
@@ -170,7 +224,7 @@ app.get("/",function(req,res){
 
 
 
-app.post("/",function(req,res){
+app.post("/",function(req,respo){
      
      
     var additem = req.body.newitem;
@@ -186,7 +240,15 @@ app.post("/",function(req,res){
     
     itemmodel.insertMany([data2send],function(err){ if(err){console.log(err)}   //insertion of all the data into items collection
     else
-{console.log("successfull insertion ")}
+{  
+    console.log("successfull insertion ");
+    itemz.push(additem);
+    clicked=clickdatarefi; 
+respo.redirect("/"); 
+    
+}
+
+
 
 });
 
@@ -194,8 +256,7 @@ app.post("/",function(req,res){
      
     //console.log(clickdatarefi);
   
-    itemz.push(additem);
-    clicked=clickdatarefi; 
+    
     
 }
 else
@@ -213,15 +274,28 @@ else
         
         else
         { 
+            
 
 
             var items2send = new itemmodel({ content:  additem });  
 
-          res.litems.push(items2send);
-          res.save();
-          clicked=clickdatarefi;
+            listmodel.updateOne( { lname: currentlist }, { $push: { litems: items2send } } ,function(err,resd)
+            {
+                  console.log(err);
+                  console.log(resd);
 
+                  clicked=clickdatarefi;
+                  respo.redirect("/");  
+
+
+            });
+
+          
+
+         
+       
         }
+        
 
 
     });
@@ -235,15 +309,15 @@ else
 
 
 
-    res.redirect("/");  
+   
 
 
 });
 
 
-app.post("/delete",function(req,res){
+app.post("/delete",function(req,respo){
      
-    
+     
     var todelete = req.body.dbutton;
     var clickdataraw=[];
     var clickdatarefi=[];
@@ -287,7 +361,7 @@ else
 
     }
  console.log(idtodelete);    
- itemmodel.deleteOne({  _id: idtodelete },function(err){console.log(err)});                    //deleting the specfic id entry
+ itemmodel.deleteOne({  _id: idtodelete },function(err){if(err){console.log(err);} else{ clicked=clickdatarefi;   respo.redirect("/");} });                    //deleting the specfic id entry
 
 }
 
@@ -300,7 +374,7 @@ else
 
     console.log(todelete); 
     console.log(clickdatarefi);
-    clicked=clickdatarefi; 
+    
 
      }
      else
@@ -335,7 +409,7 @@ else
     
         }
      console.log(idtodelete);    
-     listmodel.findOneAndUpdate({lname: currentlist},{$pull: {litems: {_id: idtodelete}}} , function(err,datum){});                //deleting the specfic id entry
+     listmodel.findOneAndUpdate({lname: currentlist},{$pull: {litems: {_id: idtodelete}}} , function(err,datum){ if(err){console.log(err);} else{clicked=clickdatarefi;  respo.redirect("/");} });                //deleting the specfic id entry
     
     }
     
@@ -344,7 +418,7 @@ else
         
         );
 
-        clicked=clickdatarefi;  
+         
      }
 
 
@@ -354,7 +428,7 @@ else
 
 
 
-     res.redirect("/");  
+     
 
 
 });
@@ -368,7 +442,7 @@ else
 
 
 
-app.post("/createorsearch",function(req,res){
+app.post("/createorsearch",function(req,respo){
 
    
 
@@ -393,6 +467,7 @@ app.post("/createorsearch",function(req,res){
           {
              
           //  console.log(res.litems);
+          respo.redirect("/");
         
         }
 
@@ -401,9 +476,16 @@ app.post("/createorsearch",function(req,res){
             var items2send = new itemmodel({ content: "New List Created" });   // packaging the data to send
             var data2send = new listmodel({ lname: tosearchorcreate , litems: [items2send]  });    // packaging the data to send
             
-            listmodel.insertMany([data2send],function(err){ if(err){console.log(err)}   //insertion of all the data into items collection
+            listmodel.insertMany([data2send],function(err){ 
+                
+                if(err){
+                    console.log(err);
+                }   //insertion of all the data into items collection
             else
-        {console.log("successfull insertion ")}
+        {console.log("successfull insertion ");
+
+        respo.redirect("/");
+              }
         
         });
         }
@@ -422,7 +504,7 @@ app.post("/createorsearch",function(req,res){
         currentlist = day ;
         clicked=[];
         itemmodel.deleteMany({}, function(err,data){});
-        listmodel.deleteMany({}, function(err,data){});
+        listmodel.deleteMany({}, function(err,data){respo.redirect("/");});
         console.log("deleting all your lists");
     }
         
@@ -432,14 +514,14 @@ app.post("/createorsearch",function(req,res){
     
 
     //console.log(tosearchorcreate);
-    res.redirect("/");
+    
 
 
 });
 
 
 
-app.post("/deletelist",function(req,res){
+app.post("/deletelist",function(req,respo){
              
     currentlist = day;
     var todeletwlist = req.body.deletelt;
@@ -450,10 +532,15 @@ app.post("/deletelist",function(req,res){
         {
             console.log(err);
         }
+
+      if(res.deletedCount == 1)
+      {
+        respo.redirect("/");
+      }
     });
      
 
-    res.redirect("/");
+    
 
 
 });
