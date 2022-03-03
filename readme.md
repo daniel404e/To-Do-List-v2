@@ -1,10 +1,14 @@
 Create new lists and tasks Dynamically with cloud synced storage in realtime.
 
+
 Hosted live @  https://dynamic-to-do-list-v2.herokuapp.com/
 
+To run the use node app.js or even nodemon app.js
 
 add tasks/items to each list
 
+
+ ![image](https://user-images.githubusercontent.com/83254980/150750590-71d5f87a-0c11-4b7f-b970-cea6ff9c1e7b.png)
 
 ![image](https://user-images.githubusercontent.com/83254980/156515762-a214a421-5528-49a9-b1bf-9c0f5d59c540.png)
 
