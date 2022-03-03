@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=
+    , initial-scale=1.0">
+    <title>TO DO </title>
+
+ 
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+<body>
+
+
+
+ 
+ 
+ 
+
+  <div class="progress">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" id="pgbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 5%"></div>
+  </div>
+
+
+
+
+  <div class="container d-flex  justify-content-center         " style="position: relative;"  > 
+  <div class="justify-content-center  p-3 my-3 bg-dark text-white shadow-lg      " style="border-radius: 7px; ">
+    <h1 style="text-align: center;">To Do List</h1>
+    <h2 style="text-align: center;"><%= whatday %> </h2>
+    <% var clickes=clicks; %> 
+     
+    </div>
+    
+
+   
+
+    
+  </div>
+<!-- 
+--------------------------------------------onclick="document.querySelector('.tyup').classList.toggle('bringfront');"----------------------------- -->
+<div class="container   tyup" id = "klmj" style="position: relative; "   >
+
+<div   class=" ujh" id="uniqs"  style="width: 100px; margin-left: 45.5%; position: relative; border-radius: 500px; "  onclick="superfunc()"   >
+
+  <div class="dots4 "    >
+    <div class="dot4 "   onclick="superfunc()" ></div>
+    <div class="dot4" onclick="superfunc()"></div>
+    <div class="shadow4 cut4 possc"   id="opq" ></div>
+    <div class="container4 cut4 psosc" id="opqw"  >
+      <div class="drop4 cut24"    ></div>
+    </div>
+    <div class="list4 psosc"  id="opqwe"  >
+      <div class="container  " id="drpdn" style="height: auto; background-color: #e5e4e2; opacity: 0; border-radius: 12px; transition-duration: 1s;" >
+      <ul>
+        
+     <% var listarray = alllists;   %>
+     <%   var n1 = listarray.length %>
+        
+    <% for(var xs=0; xs<n1 ;xs++) { %>     
+      <li  onclick="document.getElementById('<%=(listarray[xs]+xs) %>').submit();">
+            
+        
+          <%=listarray[xs]  %>  
+        <form   action="/createorsearch"   method="post" id='<%=(listarray[xs]+xs) %>' >   
+          <input type="text" value='<%=listarray[xs] %>'      style="display: none;  " name="searchorcreatet">
+           </form> 
+            
+             
+           <form   action="/deletelist"   method="post"><input    name="deletelt"  style="display: none;" value='<%=listarray[xs] %>' >    <button class="btn "   type="submit"  ><i class="fa-solid fa-circle-minus"></i> </button> 
+           </form>
+            
+      
+          </li>
+        <% } %> 
+        
+         
+      </ul>
+      </div>
+    </div>
+    <div class="dot4" onclick="superfunc()" ></div>
+  </div>
+    
+  </div>
+  
+       
+       </div>
+<!-- 
+-------------------------------------------------------------------------------------------- -->
+
+
+
+  <!-- 
+  -------------------------the searchbox----------------------------- -->
+ 
+  <div class="wrap   my-3     mb-1">
+    <form   action="/createorsearch"   method="post">  <div class="search ">
+       <input type="text" class="searchTerm" placeholder="Create or Search lists" style="border-radius: 2px;  " name="searchorcreatet" autocomplete="off" required>
+       <button type="submit" class="searchButton"  >
+         <i class="fa fa-arrow-right" ></i>
+      </button></form>
+    </div>
+ </div>
+ 
+
+ 
+<!-- 
+  ----------------------------- -->
+      <div id="cache"  style="display: none;"><%=JSON.stringify(clickes)%></div>
+       
+    <div class="container d-flex  justify-content-center  ">
+      <div class= "list-group ">
+         <% var thearray = additem;   %>
+         <%   var n = additem.length %>
+            
+        <% for(var i=0; i<n ;i++) { %>     
+          <div class="list-group-item list-group-item-action shadow rounded " id=<%=i%>  onclick="makeActive(this.id)" style="margin-top: 0.5px;">
+          <div class="row  ">
+           <div class="col ">
+          <p  style="margin-top: 13%;" ><%= additem[i] %></p> </div>
+          <div class="col  ">
+            <div style="margin-left: 45%;" >
+          <form   action="/delete"   method="post"><input  name="inpclick"  class="qsd" style="display: none;" value="0"><button class="btn"  type="submit" name=dbutton id="delbut" value=<%=i%> ><i class="fa-solid fa-circle-minus"></i> </button>
+          </form></div> </div>
+        
+        </div> </div>
+            <% } %> 
+           
+           
+   
+       
+  
+
+         
+
+
+
+
+     <form action="/" method="POST" >
+     
+      <div class="row">
+        <div class="col mt-3">
+          
+        <input type="text" class="inpbox"  name="newitem" required autocomplete="off" placeholder="Enter Task" oninvalid="this.setCustomValidity('Enter Recent Task')" oninput="this.setCustomValidity('')">
+        </div>
+        <div class="col mt-2">
+          <input  name="inpclick2"  class="qsd" style="display: none;" value="0">
+        <button type="submit" name="button" class="css-button-arrow--grey "  style="font-size: 25px; " value="" id="iop">Add</button>
+        </div>
+       </div>
+     </form>
+  
+
+      </div>
+    </div>
+
+
+  
+    
+
+<div value= <%=n%>   id="iosid" style="display: none" ><%=n%></div>
+
+
+
+<script src="css/scrip.js">
+   
+
+</script>
+</body>
+</html>
