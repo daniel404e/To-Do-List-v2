@@ -156,12 +156,12 @@ app.get("/",function(req,res){
 
     setTimeout(function(){
         syncdbtoitems();  
-    }, 500); 
+    }, 1000); 
          
         setTimeout(function(){
             res.render("list",{whatday: currentlist, additem: itemz , clicks: clicked ,alllists: listz });
 
-        }, 600);   
+        }, 1500);   
 
          
 
